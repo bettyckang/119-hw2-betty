@@ -223,7 +223,7 @@ def q6(rdd):
 
     rdd = rdd.map(lambda x: (0, x)) # Map numbers to key value pair for general_map
     rdd = general_map(rdd, lambda k, v: [(int(d), 1) for d in str(v)]) # Map to (digit, 1) pairs
-    rdd = general_reduce(rdd, lambda x, y: x + y) # Reduce to get frequency of each digit
+    rdd = general_reduce(rdd, lambda k, v: k + v) # Reduce to get frequency of each digit
 
     collected = rdd.collect()
 
@@ -318,9 +318,12 @@ def number_to_words(n):
     elif n < 1000000:
     # For numbers between 1000 and 999999, split number by thousands and hundreds and recursively call number_to_words on each part
         return number_to_words(n//1000) + ' thousand ' + (number_to_words(n % 1000) if n % 1000 !=0 else '' )
-    elif n == 1000000:
-        return 'one million'
-
+    elif n < 10000000:
+    # Expand up to 10 million for question 8
+    # For numbers between 1000000 and 9999999 split number by millions and thousands, use ones dictionary for millions and recursively call number_to_words on remainder
+        return ones[n//1000000] + ' million ' + (number_to_words(n % 1000000) if n % 1000000 !=0 else '' )
+    elif n == 10000000:
+        return 'ten million'
 
 def q7(rdd):
     # Input: the RDD from Q4
@@ -328,7 +331,7 @@ def q7(rdd):
 
     rdd = rdd.map(lambda x: (0, x)) # Map numbers to key value pair for general_map
     rdd = general_map(rdd, lambda k, v: [(letter, 1) for letter in number_to_words(v) if letter.isalpha()]) # Map to (letter, 1) pairs, excluding spaces
-    rdd = general_reduce(rdd, lambda x, y: x + y) # Reduce to get frequency of each letter
+    rdd = general_reduce(rdd, lambda k, v: k + v) # Reduce to get frequency of each letter
 
     collected = rdd.collect()
 
@@ -354,24 +357,18 @@ Notes:
 """
 
 def load_input_bigger():
-    # TODO
-    raise NotImplementedError
+    rdd = sc.parallelize(range(1, 10_000_001))
+    return rdd
 
 def q8_a():
-    # version of Q6
-    # It should call into q6() with the new RDD!
-    # Don't re-implemented the q6 logic.
+    # Version of Q6 calling q6() with the new RDD!
     # Output: a tuple (most common digit, most common frequency, least common digit, least common frequency)
-    # TODO
-    raise NotImplementedError
+    return q6(load_input_bigger())
 
 def q8_b():
-    # version of Q7
-    # It should call into q7() with the new RDD!
-    # Don't re-implemented the q6 logic.
-    # Output: a tulpe (most common char, most common frequency, least common char, least common frequency)
-    # TODO
-    raise NotImplementedError
+    # Version of Q7 calling q7() with the new RDD!
+    # Output: a tuple (most common char, most common frequency, least common char, least common frequency)
+    return q7(load_input_bigger())
 
 """
 Discussion questions
@@ -380,12 +377,30 @@ Discussion questions
 
 === ANSWER Q9 BELOW ===
 
+Q6
+k1: int (initial key 0)
+v1: int (the number itself)
+k2: int (the digit)
+v2: int (the frequency count)
+
+Q7
+k1: int (initial key 0)
+v1: int (the number itself)
+k2: str (the character for each letter in the English representation of number)
+v2: int (the frequency count)
+
 === END OF Q9 ANSWER ===
 
 10. Do you think it would be possible to compute the above using only the
 "simplified" MapReduce we saw in class? Why or why not?
 
 === ANSWER Q10 BELOW ===
+
+No, it would not be possible to computer using the simplified MapReduce model from class.
+The simplified map function produces exactly one output for each input
+Q6 and Q7 require multiple outputs for each number (one for each digit or letter)
+The simplified reduce function also only produces one final result
+Q6 and Q7 require separate frequency counts for each digit or letter
 
 === END OF Q10 ANSWER ===
 """
@@ -408,8 +423,10 @@ your answer should return a Python set of (key, value) pairs after the reduce st
 def q11(rdd):
     # Input: the RDD from Q4
     # Output: the result of the pipeline, a set of (key, value) pairs
-    # TODO
-    raise NotImplementedError
+    rdd = rdd.map(lambda x: (0, x))
+    rdd = general_map(rdd, lambda k, v: [])
+    rdd = general_reduce(rdd, lambda x, y: x + y)
+    return set(rdd.collect())
 
 """
 12. What happened? Explain below.
@@ -417,6 +434,10 @@ Does this depend on anything specific about how
 we chose to define general_reduce?
 
 === ANSWER Q12 BELOW ===
+
+The pipeline returns an empty set because the map stage produced no key value pairs, so there were no values to reduce.
+This depends on how we define general_reduce. Since we use reduceByKey, we get an empty result from an empty RDD without error.
+If we used reduce() instead we would get an error.  
 
 === END OF Q12 ANSWER ===
 
@@ -431,6 +452,9 @@ is different depending on the order of the input?
 
 === ANSWER Q13 BELOW ===
 
+Since my general_reduce uses reduceByKey, the order of the input can affect the output. 
+If the reduction operation is not associative or commutative, changing the order or grouping of values can produce different results.
+
 === END OF Q13 ANSWER ===
 
 14.
@@ -444,8 +468,10 @@ Important: Please create an example where the output of the reduce stage is a se
 def q14(rdd):
     # Input: the RDD from Q4
     # Output: the result of the pipeline, a set of (key, value) pairs
-    # TODO
-    raise NotImplementedError
+    rdd = rdd.map(lambda x: (0, x))
+    rdd = general_map(rdd, lambda k, v: [(k, v)])
+    rdd = general_reduce(rdd, lambda x, y: x - y) # Use subtraction to create a non-associative operation
+    return set(rdd.collect())
 
 """
 15.
@@ -455,6 +481,13 @@ Does it exhibit nondeterministic behavior on different runs?
 including partitioning.
 
 === ANSWER Q15 BELOW ===
+
+First run: {(0, 484368374988)}
+Second run: {(0, 484368374988)}
+Third run: {(0, 484368374988)}
+
+My runs produced the same output and did not exhibit nondeterministic behavior, but this is not guaranteed.
+With more runs this could change
 
 === END OF Q15 ANSWER ===
 
