@@ -71,12 +71,9 @@ def general_map(rdd, f):
     f: a function (k1, v1) -> List[(k2, v2)]
     output: an RDD with values of type (k2, v2)
     """
-    # TODO
-    raise NotImplementedError
-    # ^^^^ remove TODO and raise NotImplementedError when implemented :)
+    rdd = rdd.flatMap(lambda pair: f(pair[0], pair[1]))
+    return rdd
 
-# Remove skip when implemented!
-@pytest.mark.skip
 def test_general_map():
     rdd = sc.parallelize(["cat", "dog", "cow", "zebra"])
 
@@ -120,11 +117,9 @@ def general_reduce(rdd, f):
     output: an RDD with values of type (k2, v2),
         and just one single value per key
     """
-    # TODO
-    raise NotImplementedError
+    rdd = rdd.reduceByKey(f)
+    return rdd
 
-# Remove skip when implemented!
-@pytest.mark.skip
 def test_general_reduce():
     rdd = sc.parallelize(["cat", "dog", "cow", "zebra"])
 
@@ -159,6 +154,13 @@ and keys for Reduce be different might be useful.
 
 === ANSWER Q3 BELOW ===
 
+If we need to apply some function to individual observations in the map stage, 
+but then want to aggregate the results by a different key in the reduce stage, 
+it would be useful to have different keys. 
+
+For example, we could use individual keys for each observation in the map stage
+and then aggregate using another key (e.g., a category or group) in the reduce stage to compute summary statistics.
+
 === END OF Q3 ANSWER ===
 """
 
@@ -175,16 +177,13 @@ set of integers between 1 and 1 million (inclusive).
 
 def load_input():
     # Return a parallelized RDD with the integers between 1 and 1,000,000
-    # This will be referred to in the following questions.
-    # TODO
-    raise NotImplementedError
+    rdd = sc.parallelize(range(1, 1_000_001))
+    return rdd
 
 def q4(rdd):
     # Input: the RDD from load_input
     # Output: the length of the dataset.
-    # You may use general_map or general_reduce here if you like (but you don't have to) to get the total count.
-    # TODO
-    raise NotImplementedError
+    return rdd.count()
 
 """
 Now use the general_map and general_reduce functions to answer the following questions.
@@ -197,8 +196,13 @@ For Q5-Q7, your answers should use general_map and general_reduce as much as pos
 def q5(rdd):
     # Input: the RDD from Q4
     # Output: the average value
-    # TODO
-    raise NotImplementedError
+
+    rdd = rdd.map(lambda x: (0, x)) # Map numbers to key value pair for general_map 
+    rdd = general_map(rdd, lambda k, v: [(k, (v, 1))]) # Map to (sum, count) pairs
+    rdd = general_reduce(rdd, lambda x, y: (x[0] + y[0], x[1] + y[1])) # Reduce to get sum and count
+    rdd = general_map(rdd, lambda k, v: [(k, v[0]/v[1])]) # Map to get average
+
+    return rdd.collect()[0][1]
 
 """
 6. Among the numbers from 1 to 1 million, when written out,
@@ -216,8 +220,17 @@ Your answer should use the general_map and general_reduce functions as much as p
 def q6(rdd):
     # Input: the RDD from Q4
     # Output: a tuple (most common digit, most common frequency, least common digit, least common frequency)
-    # TODO
-    raise NotImplementedError
+
+    rdd = rdd.map(lambda x: (0, x)) # Map numbers to key value pair for general_map
+    rdd = general_map(rdd, lambda k, v: [(int(d), 1) for d in str(v)]) # Map to (digit, 1) pairs
+    rdd = general_reduce(rdd, lambda x, y: x + y) # Reduce to get frequency of each digit
+
+    collected = rdd.collect()
+
+    most_common_digit, most_common_frequency = max(collected, key=lambda x: x[1])
+    least_common_digit, least_common_frequency = min(collected, key=lambda x: x[1])
+
+    return (most_common_digit, most_common_frequency, least_common_digit, least_common_frequency)
 
 """
 7. Among the numbers from 1 to 1 million, written out in English, which letter is most common?
@@ -255,13 +268,74 @@ Notes:
   (Note the 1001 case above which differs from some other implementations!)
 """
 
-# *** Define helper function(s) here ***
+# Start with dictionaries for ones and tens
+ones = {
+    0: "",
+    1: "one",
+    2: "two",
+    3: "three",
+    4: "four",
+    5: "five",
+    6: "six",
+    7: "seven",
+    8: "eight",
+    9: "nine",
+    10: "ten",
+    11: "eleven",
+    12: "twelve",
+    13: "thirteen",
+    14: "fourteen",
+    15: "fifteen",
+    16: "sixteen",
+    17: "seventeen",
+    18: "eighteen",
+    19: "nineteen"
+}
+
+tens = {
+    20: "twenty",
+    30: "thirty",
+    40: "forty",
+    50: "fifty",
+    60: "sixty",
+    70: "seventy",
+    80: "eighty",
+    90: "ninety"
+}
+
+# Helper function
+def number_to_words(n):
+    # Automatically return ones dictionary value for numbers less than 20
+    if n < 20: 
+        return ones[n]
+    # For numbers between 20 and 99, return the tens dictionary value and the ones dictionary value for the remainder (if not divisible by 10)
+    elif n < 100: 
+        return tens[n - n % 10] + ('' if n % 10 == 0 else ' ' + ones[n % 10])
+    # For numbers between 100 and 999, return the ones dictionary value for the hundreds place, followed by "hundred", and then the remainder (if not divisible by 100)
+    elif n < 1000: 
+    # For numbers between 100 and 999, return ones dictionary for hundreds + "hundred and" and recursively call number_to_words on remainder
+        return ones[n // 100] + ' hundred' + ('' if n % 100 == 0 else ' and ' + number_to_words(n % 100))
+    elif n < 1000000:
+    # For numbers between 1000 and 999999, split number by thousands and hundreds and recursively call number_to_words on each part
+        return number_to_words(n//1000) + ' thousand ' + (number_to_words(n % 1000) if n % 1000 !=0 else '' )
+    elif n == 1000000:
+        return 'one million'
+
 
 def q7(rdd):
     # Input: the RDD from Q4
-    # Output: a tulpe (most common char, most common frequency, least common char, least common frequency)
-    # TODO
-    raise NotImplementedError
+    # Output: a tuple (most common char, most common frequency, least common char, least common frequency)
+
+    rdd = rdd.map(lambda x: (0, x)) # Map numbers to key value pair for general_map
+    rdd = general_map(rdd, lambda k, v: [(letter, 1) for letter in number_to_words(v) if letter.isalpha()]) # Map to (letter, 1) pairs, excluding spaces
+    rdd = general_reduce(rdd, lambda x, y: x + y) # Reduce to get frequency of each letter
+
+    collected = rdd.collect()
+
+    most_common_letter, most_common_frequency = max(collected, key=lambda x: x[1])
+    least_common_letter, least_common_frequency = min(collected, key=lambda x: x[1])
+
+    return (most_common_letter, most_common_frequency, least_common_letter, least_common_frequency)    
 
 """
 8. Does the answer change if we have the numbers from 1 to 10,000,000?
