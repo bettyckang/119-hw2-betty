@@ -305,13 +305,12 @@ tens = {
 
 # Helper function
 def number_to_words(n):
-    # Automatically return ones dictionary value for numbers less than 20
     if n < 20: 
+    # Automatically return ones dictionary value for numbers less than 20
         return ones[n]
-    # For numbers between 20 and 99, return the tens dictionary value and the ones dictionary value for the remainder (if not divisible by 10)
     elif n < 100: 
+    # For numbers between 20 and 99, return the tens dictionary value and the ones dictionary value for the remainder (if not divisible by 10)
         return tens[n - n % 10] + ('' if n % 10 == 0 else ' ' + ones[n % 10])
-    # For numbers between 100 and 999, return the ones dictionary value for the hundreds place, followed by "hundred", and then the remainder (if not divisible by 100)
     elif n < 1000: 
     # For numbers between 100 and 999, return ones dictionary for hundreds + "hundred and" and recursively call number_to_words on remainder
         return ones[n // 100] + ' hundred' + ('' if n % 100 == 0 else ' and ' + number_to_words(n % 100))
@@ -399,8 +398,8 @@ v2: int (the frequency count)
 No, it would not be possible to computer using the simplified MapReduce model from class.
 The simplified map function produces exactly one output for each input
 Q6 and Q7 require multiple outputs for each number (one for each digit or letter)
-The simplified reduce function also only produces one final result
-Q6 and Q7 require separate frequency counts for each digit or letter
+The simplified reduce function also only produces one final result and wouldn't support aggregating separately by category or key
+while Q6 and Q7 require separate frequency counts for each digit or letter
 
 === END OF Q10 ANSWER ===
 """
