@@ -8,8 +8,8 @@ q8a,(1, 7000001, 0, 5888896)
 q8b,('n', 84410002, 'g', 7000000)
 q11,set()
 q14,{(0, 484368374988)}
-q16a,Not Implemented
-q16b,Not Implemented
-q16c,Not Implemented
-q20,Not Implemented
-PART 1,4 unfinished questions
+q16a,{(0, -500000499998)}
+q16b,{(0, 437497249996)}
+q16c,{(0, 496079187472)}
+q20,True
+PART 1,0 unfinished questions

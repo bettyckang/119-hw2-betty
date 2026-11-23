@@ -500,18 +500,18 @@ Write three functions, a, b, and c that use different levels of parallelism.
 
 def q16_a():
     # For this one, create the RDD yourself. Choose the number of partitions.
-    # TODO
-    raise NotImplementedError
+    rdd = sc.parallelize(range(1, 1_000_001), 1)
+    return q14(rdd)
 
 def q16_b():
     # For this one, create the RDD yourself. Choose the number of partitions.
-    # TODO
-    raise NotImplementedError
+    rdd = sc.parallelize(range(1, 1_000_001), 4)
+    return q14(rdd)
 
 def q16_c():
     # For this one, create the RDD yourself. Choose the number of partitions.
-    # TODO
-    raise NotImplementedError
+    rdd = sc.parallelize(range(1, 1_000_001), 16)
+    return q14(rdd)
 
 """
 Discussion questions
@@ -520,12 +520,21 @@ Discussion questions
 
 === ANSWER Q17 BELOW ===
 
+Yes, I observed different outputs for each level of parallelism
+q16a answer: {(0, -500000499998)}
+q16b answer: {(0, 437497249996)}
+q16c answer: {(0, 496079187472)}
+
 === END OF Q17 ANSWER ===
 
 18. Do you think this would be a serious problem if this occured on a real-world pipeline?
 Explain why or why not.
 
 === ANSWER Q18 BELOW ===
+
+Yes. In a real-world pipeline, nondeterministic behavior causes issues with reproducibility, debugging, and reliability.
+Nondeterministic outputs are also sometimes rare, so they may not be detected during testing, but could cause problems in production.
+When pipeline outputs are nondeterministic, the outputs cannot be trusted to make decisions or be used for further analysis.
 
 === END OF Q18 ANSWER ===
 
@@ -540,6 +549,14 @@ Take a look at the paper. What is one sentence you found interesting?
 
 === ANSWER Q19 BELOW ===
 
+"For some patterns, non-commutative
+reducers lead to nondeterministic results, but the nondeterminism
+appears known and tolerated by programmers."
+
+I would have thought that nondeterministic behavior would be a serious concern for programmers,
+but this paper indicates that it is known and tolerated in some cases. 
+I had figured that programmers would want to run robust checks for nondeterministic behavior and avoid it at all costs.
+
 === END OF Q19 ANSWER ===
 
 20.
@@ -550,8 +567,13 @@ it possible to implement the example, and "False" if it was not.
 """
 
 def q20():
-    # TODO
-    raise NotImplementedError
+    rdd = sc.parallelize(range(1, 6))
+    rdd = rdd.map(lambda x: (0, x)) # Pre-mapping using 0 key
+    rdd = general_map(rdd, lambda k, v: [(k, v)])
+    rdd = general_reduce(rdd, lambda x, y: y) # Keep second value whenever two values are combined
+
+    print(rdd.collect()) # Print results to show impelmentation is possible
+    return True
 
 """
 That's it for Part 1!
