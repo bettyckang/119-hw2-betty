@@ -254,7 +254,6 @@ class ThroughputHelper:
         plt.close()
         
 
-
 class LatencyHelper:
     def __init__(self):
         # Initialize the object.
@@ -340,6 +339,7 @@ a text file, output/part3-reflection.txt.
 
 I would like you to think about and answer the following questions:
 
+"
 1. What would we expect from the throughput and latency
 of the pipeline, given only the dataflow graph?
 

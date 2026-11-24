@@ -275,7 +275,7 @@ Notes:
 
 # Start with dictionaries for ones and tens
 ones = {
-    0: "",
+    0: "zero",
     1: "one",
     2: "two",
     3: "three",
@@ -404,11 +404,13 @@ v2: int (the frequency count)
 
 === ANSWER Q10 BELOW ===
 
-No, it would not be possible to computer using the simplified MapReduce model from class.
+It would be more difficult to compute these results using simplified MapReduce.
 The simplified map function produces exactly one output for each input
 Q6 and Q7 require multiple outputs for each number (one for each digit or letter)
 The simplified reduce function also only produces one final result and wouldn't support aggregating separately by category or key
-while Q6 and Q7 require separate frequency counts for each digit or letter
+while Q6 and Q7 require separate frequency counts for each digit or letter.
+However, if we allowed dictionaries to be used as values, map operations could produce a dictionary
+of frequency counts and reduce could combine them into a single dictionary.
 
 === END OF Q10 ANSWER ===
 """
