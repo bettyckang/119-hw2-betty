@@ -1,0 +1,125 @@
+Measuring performance for P=1
+[(0, 1)]
+[(0, 10)]
+[(0, 100)]
+[(0, 1000)]
+[(0, 10000)]
+[(0, 100000)]
+[(0, 1000000)]
+[(0, 3000000)]
+[(0, 1)]
+[(0, 10)]
+[(0, 100)]
+[(0, 1000)]
+[(0, 10000)]
+[(0, 100000)]
+[(0, 1000000)]
+[(0, 3000000)]
+Parallelism: 1, Input Size: 1, Throughput: 0.88 items/sec, Latency: 425.38 ms
+Parallelism: 1, Input Size: 10, Throughput: 32.83 items/sec, Latency: 478.54 ms
+Parallelism: 1, Input Size: 100, Throughput: 267.64 items/sec, Latency: 406.14 ms
+Parallelism: 1, Input Size: 1000, Throughput: 2762.25 items/sec, Latency: 412.37 ms
+Parallelism: 1, Input Size: 10000, Throughput: 25445.59 items/sec, Latency: 613.21 ms
+Parallelism: 1, Input Size: 100000, Throughput: 67358.00 items/sec, Latency: 2877.08 ms
+Parallelism: 1, Input Size: 1000000, Throughput: 63087.37 items/sec, Latency: 30739.07 ms
+Parallelism: 1, Input Size: 3000000, Throughput: 58703.21 items/sec, Latency: 103322.23 ms
+Measuring performance for P=2
+[(0, 1)]
+[(0, 10)]
+[(0, 100)]
+[(0, 1000)]
+[(0, 10000)]
+[(0, 100000)]
+[(0, 1000000)]
+[(0, 3000000)]
+[(0, 1)]
+[(0, 10)]
+[(0, 100)]
+[(0, 1000)]
+[(0, 10000)]
+[(0, 100000)]
+[(0, 1000000)]
+[(0, 3000000)]
+Parallelism: 2, Input Size: 1, Throughput: 3.98 items/sec, Latency: 452.22 ms
+Parallelism: 2, Input Size: 10, Throughput: 37.16 items/sec, Latency: 444.37 ms
+Parallelism: 2, Input Size: 100, Throughput: 394.07 items/sec, Latency: 487.80 ms
+Parallelism: 2, Input Size: 1000, Throughput: 4100.62 items/sec, Latency: 467.36 ms
+Parallelism: 2, Input Size: 10000, Throughput: 34368.14 items/sec, Latency: 555.70 ms
+Parallelism: 2, Input Size: 100000, Throughput: 119784.49 items/sec, Latency: 1642.61 ms
+Parallelism: 2, Input Size: 1000000, Throughput: 121162.41 items/sec, Latency: 17023.57 ms
+Parallelism: 2, Input Size: 3000000, Throughput: 107393.69 items/sec, Latency: 59816.91 ms
+Measuring performance for P=4
+[(0, 1)]
+[(0, 10)]
+[(0, 100)]
+[(0, 1000)]
+[(0, 10000)]
+[(0, 100000)]
+[(0, 1000000)]
+[(0, 3000000)]
+[(0, 1)]
+[(0, 10)]
+[(0, 100)]
+[(0, 1000)]
+[(0, 10000)]
+[(0, 100000)]
+[(0, 1000000)]
+[(0, 3000000)]
+Parallelism: 4, Input Size: 1, Throughput: 2.93 items/sec, Latency: 549.28 ms
+Parallelism: 4, Input Size: 10, Throughput: 31.12 items/sec, Latency: 550.89 ms
+Parallelism: 4, Input Size: 100, Throughput: 293.79 items/sec, Latency: 585.79 ms
+Parallelism: 4, Input Size: 1000, Throughput: 3207.26 items/sec, Latency: 564.16 ms
+Parallelism: 4, Input Size: 10000, Throughput: 30140.42 items/sec, Latency: 618.19 ms
+Parallelism: 4, Input Size: 100000, Throughput: 152699.46 items/sec, Latency: 1363.04 ms
+Parallelism: 4, Input Size: 1000000, Throughput: 188532.07 items/sec, Latency: 10602.38 ms
+Parallelism: 4, Input Size: 3000000, Throughput: 171539.12 items/sec, Latency: 37397.82 ms
+Measuring performance for P=8
+[(0, 1)]
+[(0, 10)]
+[(0, 100)]
+[(0, 1000)]
+[(0, 10000)]
+[(0, 100000)]
+[(0, 1000000)]
+[(0, 3000000)]
+[(0, 1)]
+[(0, 10)]
+[(0, 100)]
+[(0, 1000)]
+[(0, 10000)]
+[(0, 100000)]
+[(0, 1000000)]
+[(0, 3000000)]
+Parallelism: 8, Input Size: 1, Throughput: 2.16 items/sec, Latency: 853.84 ms
+Parallelism: 8, Input Size: 10, Throughput: 20.11 items/sec, Latency: 894.56 ms
+Parallelism: 8, Input Size: 100, Throughput: 206.52 items/sec, Latency: 885.56 ms
+Parallelism: 8, Input Size: 1000, Throughput: 1879.29 items/sec, Latency: 910.17 ms
+Parallelism: 8, Input Size: 10000, Throughput: 20054.52 items/sec, Latency: 903.05 ms
+Parallelism: 8, Input Size: 100000, Throughput: 123530.78 items/sec, Latency: 1534.73 ms
+Parallelism: 8, Input Size: 1000000, Throughput: 224331.36 items/sec, Latency: 8272.91 ms
+Parallelism: 8, Input Size: 3000000, Throughput: 228884.67 items/sec, Latency: 26073.71 ms
+Measuring performance for P=16
+[(0, 1)]
+[(0, 10)]
+[(0, 100)]
+[(0, 1000)]
+[(0, 10000)]
+[(0, 100000)]
+[(0, 1000000)]
+[(0, 3000000)]
+[(0, 1)]
+[(0, 10)]
+[(0, 100)]
+[(0, 1000)]
+[(0, 10000)]
+[(0, 100000)]
+[(0, 1000000)]
+[(0, 3000000)]
+Parallelism: 16, Input Size: 1, Throughput: 1.32 items/sec, Latency: 1473.83 ms
+Parallelism: 16, Input Size: 10, Throughput: 12.85 items/sec, Latency: 1489.82 ms
+Parallelism: 16, Input Size: 100, Throughput: 122.53 items/sec, Latency: 1576.49 ms
+Parallelism: 16, Input Size: 1000, Throughput: 1244.38 items/sec, Latency: 1607.05 ms
+Parallelism: 16, Input Size: 10000, Throughput: 11763.74 items/sec, Latency: 1705.92 ms
+Parallelism: 16, Input Size: 100000, Throughput: 84874.13 items/sec, Latency: 2214.53 ms
+Parallelism: 16, Input Size: 1000000, Throughput: 209211.34 items/sec, Latency: 9649.11 ms
+Parallelism: 16, Input Size: 3000000, Throughput: 221471.48 items/sec, Latency: 29016.74 ms

@@ -1,0 +1,37 @@
+1. From the dataflow graph, I can tell that many operations in the 
+pipeline can run independently on different elements in the input dataset 
+(data parallelism). Partitioning the input data would allow for this, as 
+different partitions could be processed simultaneously. I would therefore
+expect throughput to increase and latency to decrease as the level of data parallelism 
+increases. Assuming even workload distribution and sufficient resources, doubling 
+the level of parallelism should halve the latency and double the throughput. However, this 
+theoretical expectation does not account for other factors that may impact performance 
+associated with parallelism, such as additional overhead.  
+
+2. We do see that the general trends of throughput and latency follow our expectations, 
+where throughput and latency generally increase for larger datasets. However,
+the observed values do not exactly match theoretical expectations for performance.
+For example, for input size 3000000 and parallelism 1, throughput was 58703.21 items/sec and 
+latency was 103322.23 ms. When we moved to parallelism 2 with this same dataset, we got a 
+throughput of 107393.69 items/sec and latency of 59816.91 ms. Under the theoretical 
+assumptions, we would have expected a throughput of 117406.42 items/s and a latency of 51661.115 ms.
+We see diminishing returns as parallelism increases further, with throughput actually
+decreasing from 228884.67 items/sec to 221471.48 and latency increasing from 26073.71 ms 
+to 29016.74 ms when moving from parallelism 8 to 16. For smaller datasets, 
+we actually find that increasing parallelism can worsen performance. For example, for a 
+dataset of 1000, moving from parallelism 2 to parallelism 16 decreases throughput from 4100.62 items/sec
+to 1244.38 items/sec and increases latency from 467.36 ms to 1607.05 ms. These observations suggest
+that performance at different levels of parallelism are impacted by size of dataset. 
+
+3. Conjecture: I conjecture that the realized benefits of data parallelism are limited by factors 
+such as overhead and computational limitations that are not incorporated into theoretical performance 
+assumptions and that a linear improvement in performance with parallelism is not an accurate 
+representation of actual performance. Increasing the number of partitions would require more overhead
+in tasks such as task scheduling, partition management, and worker communication. For smaller datasets,
+the overhead associated with more partitions may outweight the benefits from increasing parallelism, 
+explaining why we see better performance at parallelism 2 than parallelism 16 on the input size of 1000.
+The decrease in performance from parallelism 8 to 16 may be associated with computational limitations and 
+increased competition for resouarces.  
+
+
+

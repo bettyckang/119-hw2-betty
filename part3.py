@@ -71,11 +71,9 @@ if __name__ == "__main__":
     sc = spark.sparkContext
     part1.sc = sc
 
-UNFINISHED = 0
-
 def PART_1_PIPELINE_PARAMETRIC(N, P):
     """
-    TODO: Follow the same logic as PART_1_PIPELINE
+    Follow the same logic as PART_1_PIPELINE
     N = number of inputs
     P = parallelism (number of partitions)
     (You can copy the code here), but make the following changes:
@@ -111,13 +109,6 @@ def PART_1_PIPELINE_PARAMETRIC(N, P):
 
     # Questions 19-20
     part1.q20(N, P)
-
-    # Answer: return the number of questions that are not implemented
-    if UNFINISHED > 0:
-        print("Warning: there are unfinished questions.")
-
-    return f"{UNFINISHED} unfinished questions"
-    raise NotImplementedError
 
 """
 === Coding part 2: measuring the throughput and latency ===
@@ -200,10 +191,146 @@ For further reading, see for example:
 https://stackoverflow.com/questions/69326838/how-to-capture-a-value-in-a-python-closure
 https://www.reddit.com/r/ProgrammingLanguages/comments/bxxx7x/python_closures_are_capturing_by_reference_should/
 """
+import time
+import matplotlib.pyplot as plt
 
 # Copy in ThroughputHelper and LatencyHelper
+NUM_RUNS = 1
+
+class ThroughputHelper:
+    def __init__(self):
+        # Initialize the object.
+        # Pipelines: a list of functions, where each function can be run on no arguments.
+        # (like: def f(): ... )
+        self.pipelines = []
+
+        # Pipeline names
+        # A list of names for each pipeline
+        self.names = []
+
+        # Pipeline input sizes
+        self.sizes = []
+
+        # Pipeline throughputs
+        # This is set to None, but will be set to a list after throughputs
+        # are calculated.
+        self.throughputs = None
+
+    def add_pipeline(self, name, size, func):
+        self.names.append(name)
+        self.sizes.append(size)
+        self.pipelines.append(func)
+        return
+
+    def compare_throughput(self):
+        self.throughputs = []
+
+        for size, func in zip(self.sizes, self.pipelines):
+            total_time = 0
+
+            for i in range(NUM_RUNS):
+                start = time.perf_counter() # Timestamp at start of function
+                func()
+                end = time.perf_counter() # Timestamp at end of function
+                run_time = end - start # Calculate runtime
+                total_time += run_time # Add to cumulative sum of runtimes
+
+            # Calculate throughput and append to list
+            throughput = (size * NUM_RUNS) / total_time
+            self.throughputs.append(throughput)
+
+        return self.throughputs
+    def generate_plot(self, filename):
+        plt.figure()
+        plt.plot(self.names, self.throughputs, marker='o')
+        plt.xscale('log')
+        plt.yscale('log')
+        plt.xlabel("Input Size (N)")
+        plt.ylabel("Throughput (Items Per Second)")
+        plt.title("Pipeline Throughput")
+        plt.grid(True, alpha=0.3)
+
+        plt.savefig(filename, bbox_inches='tight')
+        plt.close()
+        
+
+
+class LatencyHelper:
+    def __init__(self):
+        # Initialize the object.
+        # Pipelines: a list of functions, where each function
+        # can be run on no arguments.
+        # (like: def f(): ... )
+        self.pipelines = []
+
+        # Pipeline names
+        # A list of names for each pipeline
+        self.names = []
+
+        # Pipeline latencies
+        # This is set to None, but will be set to a list after latencies
+        # are calculated.
+        self.latencies = None
+
+    def add_pipeline(self, name, func):
+        self.names.append(name)
+        self.pipelines.append(func)
+        return
+
+    def compare_latency(self):
+        self.latencies = []
+
+        for func in self.pipelines:
+            total_time = 0
+
+            for i in range(NUM_RUNS):
+                start = time.perf_counter() # Timestamp at start of function
+                func()
+                end = time.perf_counter() # Timestamp at end of function
+                total_time += end - start
+
+            # Calculate latency in milliseconds and append to list 
+            latency = (total_time / NUM_RUNS) * 1000 
+            self.latencies.append(latency)
+
+        return self.latencies
+
+    def generate_plot(self, filename):
+        plt.figure()
+        plt.plot(self.names, self.latencies, marker='o')
+        plt.xscale('log')
+        plt.yscale('log')
+        plt.xlabel("Input Size (N)")
+        plt.ylabel("Latency (Milliseconds)")
+        plt.title("Pipeline Latency")
+        plt.grid(True, alpha=0.3)
+
+        plt.savefig(filename, bbox_inches='tight')
+        plt.close()
 
 # Insert code to generate plots here as needed
+def measure_performance():
+    # Measure throughput and latency for different levels of parallelism
+    parallelism_levels = [1, 2, 4, 8, 16]
+    input_sizes = [1, 10, 100, 1000, 10_000, 100_000, 1_000_000, 3_000_000]
+
+    for P in parallelism_levels:
+        print(f"Measuring performance for P={P}", flush=True) # Print status message
+        throughput_helper = ThroughputHelper()
+        latency_helper = LatencyHelper()
+
+        for N in input_sizes: # Loop through input sizes
+            throughput_helper.add_pipeline(N, N * 2, lambda N=N, P=P: PART_1_PIPELINE_PARAMETRIC(N, P))
+            latency_helper.add_pipeline(N, lambda N=N, P=P: PART_1_PIPELINE_PARAMETRIC(N, P))
+
+        throughputs = throughput_helper.compare_throughput()
+        latencies = latency_helper.compare_latency()
+
+        throughput_helper.generate_plot(f"output/part3-throughput-{P}.png")
+        latency_helper.generate_plot(f"output/part3-latency-{P}.png")
+
+        for N, throughput, latency in zip(input_sizes, throughputs, latencies): # Print results for each input size to console for reflection review
+            print(f"Parallelism: {P}, Input Size: {N}, Throughput: {throughput:.2f} items/sec, Latency: {latency:.2f} ms")
 
 """
 === Reflection part ===
@@ -261,5 +388,4 @@ Running python3 part3.py should work and should re-generate all of your plots in
 """
 
 if __name__ == '__main__':
-    PART_1_PIPELINE_PARAMETRIC(100, 2)
-    print("Parametric pipeline completed successfully.")
+    measure_performance()
