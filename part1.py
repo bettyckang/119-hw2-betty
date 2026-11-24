@@ -175,9 +175,14 @@ set of integers between 1 and 1 million (inclusive).
 4. First, we need a function that loads the input.
 """
 
-def load_input():
+def load_input(N=None, P=None):
+    if N is None:
+        N = 1_000_000
+
+    if P is None: 
+        return sc.parallelize(range(1, N + 1))
     # Return a parallelized RDD with the integers between 1 and 1,000,000
-    rdd = sc.parallelize(range(1, 1_000_001))
+    rdd = sc.parallelize(range(1, N + 1), P)
     return rdd
 
 def q4(rdd):
@@ -355,19 +360,23 @@ Notes:
   helped speed it up.
 """
 
-def load_input_bigger():
-    rdd = sc.parallelize(range(1, 10_000_001))
+def load_input_bigger(N=None, P=None):
+    if N is None:
+        N = 10_000_000
+    if P is None:
+        return sc.parallelize(range(1, N + 1))
+    rdd = sc.parallelize(range(1, N + 1), P)
     return rdd
 
-def q8_a():
+def q8_a(N=None, P=None):
     # Version of Q6 calling q6() with the new RDD!
     # Output: a tuple (most common digit, most common frequency, least common digit, least common frequency)
-    return q6(load_input_bigger())
+    return q6(load_input_bigger(N, P))
 
-def q8_b():
+def q8_b(N=None, P=None):
     # Version of Q7 calling q7() with the new RDD!
     # Output: a tuple (most common char, most common frequency, least common char, least common frequency)
-    return q7(load_input_bigger())
+    return q7(load_input_bigger(N, P))
 
 """
 Discussion questions
@@ -497,19 +506,34 @@ with at least 3 different levels of parallelism.
 Write three functions, a, b, and c that use different levels of parallelism.
 """
 
-def q16_a():
+def q16_a(N=None, P=None):
     # For this one, create the RDD yourself. Choose the number of partitions.
-    rdd = sc.parallelize(range(1, 1_000_001), 1)
+    if N is None:
+        N = 1_000_000
+    if P is None:
+        P = 1
+    
+    rdd = sc.parallelize(range(1, N + 1), P)
     return q14(rdd)
 
-def q16_b():
+def q16_b(N=None, P=None):
     # For this one, create the RDD yourself. Choose the number of partitions.
-    rdd = sc.parallelize(range(1, 1_000_001), 4)
+    if N is None:
+        N = 1_000_000
+    if P is None:
+        P = 4
+
+    rdd = sc.parallelize(range(1, N + 1), P)
     return q14(rdd)
 
-def q16_c():
+def q16_c(N=None, P=None):
     # For this one, create the RDD yourself. Choose the number of partitions.
-    rdd = sc.parallelize(range(1, 1_000_001), 16)
+    if N is None:
+        N = 1_000_000
+    if P is None:
+        P = 16
+
+    rdd = sc.parallelize(range(1, N + 1), P)
     return q14(rdd)
 
 """
@@ -565,8 +589,14 @@ For this part, just return the answer "True" at the end if you found
 it possible to implement the example, and "False" if it was not.
 """
 
-def q20():
-    rdd = sc.parallelize(range(1, 6))
+def q20(N=None, P=None):
+    if N is None:
+        N = 5
+    if P is None:
+        rdd = sc.parallelize(range(1, N + 1))
+    else: 
+        rdd = sc.parallelize(range(1, N + 1), P)
+
     rdd = rdd.map(lambda x: (0, x)) # Pre-mapping using 0 key
     rdd = general_map(rdd, lambda k, v: [(k, v)])
     rdd = general_reduce(rdd, lambda x, y: y) # Keep second value whenever two values are combined

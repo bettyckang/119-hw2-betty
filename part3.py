@@ -69,6 +69,9 @@ from pyspark.sql import SparkSession
 if __name__ == "__main__":
     spark = SparkSession.builder.appName("DataflowGraphExample").getOrCreate()
     sc = spark.sparkContext
+    part1.sc = sc
+
+UNFINISHED = 0
 
 def PART_1_PIPELINE_PARAMETRIC(N, P):
     """
@@ -80,6 +83,40 @@ def PART_1_PIPELINE_PARAMETRIC(N, P):
     - load_input_bigger (including q8 and q16) should use an input of size N.
     - all functions should use an RDD with level of parallelism P (number of partitions = P).
     """
+
+    try:
+        dfs = part1.load_input(N, P)
+    except NotImplementedError:
+        print("Welcome to Part 1! Implement load_input() to get started.")
+        dfs = sc.parallelize([])
+
+    # Questions 1-3
+    part1.q1()
+    part1.q2()
+
+    # Questions 4-10
+    part1.q4(dfs)
+    part1.q5(dfs)
+    part1.q6(dfs)
+    part1.q7(dfs)
+    part1.q8_a(N, P)
+    part1.q8_b(N, P)
+
+    # Questions 11-18
+    part1.q11(dfs)
+    part1.q14(dfs)
+    part1.q16_a(N, P)
+    part1.q16_b(N, P)
+    part1.q16_c(N, P)
+
+    # Questions 19-20
+    part1.q20(N, P)
+
+    # Answer: return the number of questions that are not implemented
+    if UNFINISHED > 0:
+        print("Warning: there are unfinished questions.")
+
+    return f"{UNFINISHED} unfinished questions"
     raise NotImplementedError
 
 """
@@ -224,7 +261,5 @@ Running python3 part3.py should work and should re-generate all of your plots in
 """
 
 if __name__ == '__main__':
-    print("Complete part 3. Please use the main function below to generate your plots so that they are regenerated whenever the code is run:")
-
-    print("[add code here]")
-    # TODO: add code here
+    PART_1_PIPELINE_PARAMETRIC(100, 2)
+    print("Parametric pipeline completed successfully.")
