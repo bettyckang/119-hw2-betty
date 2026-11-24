@@ -227,7 +227,7 @@ def q6(rdd):
     # Output: a tuple (most common digit, most common frequency, least common digit, least common frequency)
 
     rdd = rdd.map(lambda x: (0, x)) # Map numbers to key value pair for general_map
-    rdd = general_map(rdd, lambda k, v: [(int(d), 1) for d in str(v)]) # Map to (digit, 1) pairs
+    rdd = general_map(rdd, lambda k, v: [(d, 1) for d in str(v)]) # Map to (digit, 1) pairs
     rdd = general_reduce(rdd, lambda k, v: k + v) # Reduce to get frequency of each digit
 
     collected = rdd.collect()
