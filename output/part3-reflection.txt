@@ -30,7 +30,7 @@ assumptions and that a linear improvement in performance with parallelism is not
 representation of actual performance. Increasing the number of partitions would require more overhead
 in tasks such as task scheduling, partition management, and worker communication. Additional overhead might
 also be introduced during operations like general_reduce if needing to aggregate values across different
-partitions. For smaller datasets, the overhead associated with more partitions may outweight the benefits 
+partitions. For smaller datasets, the overhead associated with more partitions may outweigh the benefits 
 from increasing parallelism, explaining why we see better performance at parallelism 2 than parallelism 16 
 on the input size of 1000. The decrease in performance from parallelism 8 to 16 may be associated with computational 
 limitations and increased competition for resources.  
